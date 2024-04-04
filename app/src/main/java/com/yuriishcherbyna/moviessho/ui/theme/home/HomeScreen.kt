@@ -25,7 +25,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
@@ -44,22 +42,27 @@ import com.yuriishcherbyna.moviessho.ui.theme.oswaldFontFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
-
-    val viewModel: HomeViewModel = viewModel()
-
-    val popularMovies = viewModel.popularMovies.collectAsState()
-    val nowShowingMovies = viewModel.nowShowingMovies.collectAsState()
+fun HomeScreen(
+    popularMovies: List<Result>,
+    nowShowingMovies: List<Result>,
+    isSearchBarVisible: Boolean,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearchBarVisibleToggle: () -> Unit
+) {
 
     Scaffold(
         topBar = {
-            if (viewModel.isSearchBarVisible) {
+            if (isSearchBarVisible) {
                 SearchBar(
-                    query = viewModel.searchQuery,
-                    onQueryChange = viewModel::onSearchQueryChanged,
+                    query = searchQuery,
+                    onQueryChange = onSearchQueryChanged,
                     onSearch = {},
                     leadingIcon = {
-                        IconButton(onClick = { viewModel.onSearchBarVisibleToggle() }) {
+                        IconButton(onClick = {
+                            onSearchBarVisibleToggle()
+                            onSearchQueryChanged("")
+                        }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = ""
@@ -68,10 +71,10 @@ fun HomeScreen() {
                     },
                     trailingIcon = {
                         IconButton(onClick = {
-                            if (viewModel.searchQuery.isNotEmpty()) {
-                                viewModel.onSearchQueryChanged("")
+                            if (searchQuery.isNotEmpty()) {
+                                onSearchQueryChanged("")
                             } else {
-                                viewModel.onSearchBarVisibleToggle()
+                                onSearchBarVisibleToggle()
                             }
                         }) {
                             Icon(
@@ -83,7 +86,7 @@ fun HomeScreen() {
                     placeholder = {
                         Text(text = "Search movies")
                     },
-                    active = viewModel.isSearchBarVisible,
+                    active = isSearchBarVisible,
                     onActiveChange = {}
                 ) {
 
@@ -91,14 +94,14 @@ fun HomeScreen() {
             }
 
             HomeTopAppBar(
-                onSearchClicked = { viewModel.onSearchBarVisibleToggle() }
+                onSearchClicked = { onSearchBarVisibleToggle() }
             )
         }
     ) { innerPadding ->
 
         PopularAndNowShowingList(
-            popularMovies = popularMovies.value,
-            nowShowingMovies = nowShowingMovies.value,
+            popularMovies = popularMovies,
+            nowShowingMovies = nowShowingMovies,
             onMovieClicked = {},
             onSeeAllClicked = {},
             modifier = Modifier.padding(innerPadding)
@@ -228,6 +231,22 @@ fun PopularAndNowShowingList(
 @Composable
 fun HomeScreenPreview() {
     MoviesShoTheme {
-        HomeScreen()
+        val movies = List(10) {
+            Result(
+                genreIds = listOf(28, 35, 27),
+                id = 4753 + it,
+                posterPath = "/hu40Uxp9WtpL34jv3zyWLb5zEVY.jpg",
+                title = "No Way Up",
+                voteAverage = 6.3
+            )
+        }
+        HomeScreen(
+            popularMovies = movies,
+            nowShowingMovies = movies,
+            isSearchBarVisible = false,
+            searchQuery = "",
+            onSearchQueryChanged = {},
+            onSearchBarVisibleToggle = {}
+        )
     }
 }
