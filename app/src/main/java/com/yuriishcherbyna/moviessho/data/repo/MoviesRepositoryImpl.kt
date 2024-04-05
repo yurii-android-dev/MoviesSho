@@ -16,7 +16,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getNowShowingMovies(): Flow<Resource<List<Result>>> {
         return flow {
             try {
-                val popularMovies = api.getPopularMovies()
+                val popularMovies = api.getPopularMovies().results
                 emit(Resource.Success(popularMovies))
             } catch (e: HttpException) {
                 emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
@@ -31,7 +31,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun getNowPopularMovies(): Flow<Resource<List<Result>>> {
         return flow {
             try {
-                val nowShowingMovies = api.getNowShowingMovies()
+                val nowShowingMovies = api.getNowShowingMovies().results
                 emit(Resource.Success(nowShowingMovies))
             } catch (e: HttpException) {
                 emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
@@ -46,7 +46,7 @@ class MoviesRepositoryImpl @Inject constructor(
     override suspend fun searchMovies(query: String): Flow<Resource<List<Result>>> {
         return flow {
             try {
-                val searchedMovies = api.searchMovies(query)
+                val searchedMovies = api.searchMovies(query).results
                 emit(Resource.Success(searchedMovies))
             } catch (e: HttpException) {
                 emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
