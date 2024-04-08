@@ -9,6 +9,7 @@ import com.yuriishcherbyna.moviessho.data.repo.MoviesRepository
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,7 +52,7 @@ class HomeViewModel @Inject constructor(
         isSearchBarVisible = !isSearchBarVisible
     }
 
-    private fun getPopularAndNowShowingMovies() {
+    fun getPopularAndNowShowingMovies() {
         viewModelScope.launch {
             _uiState.update { state -> state.copy(isLoading = true) }
             val nowShowingMovies = repository.getNowShowingMovies()
@@ -62,6 +63,7 @@ class HomeViewModel @Inject constructor(
             nowShowingMovies.combine(popularMovies) { nowShowing, popular ->
                 Pair(nowShowing, popular)
             }.collect { (nowShowingResult, popularResult) ->
+                delay(3000)
                 _uiState.update { state ->
                     state.copy(
                         nowShowingMovies = (nowShowingResult as? Resource.Success)?.data

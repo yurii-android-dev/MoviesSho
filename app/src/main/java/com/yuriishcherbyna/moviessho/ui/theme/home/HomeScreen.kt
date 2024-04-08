@@ -17,7 +17,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
+import com.yuriishcherbyna.moviessho.ui.theme.home.components.ErrorComponent
+import com.yuriishcherbyna.moviessho.ui.theme.home.components.LoadingComponent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.PopularItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.TextAndSeeAllButtonRow
@@ -56,7 +57,8 @@ fun HomeScreen(
     onSearchQueryChanged: (String) -> Unit,
     onSearchBarVisibleToggle: () -> Unit,
     onMovieClicked: (Int) -> Unit,
-    onSeeAllClicked: (MovieType) -> Unit
+    onSeeAllClicked: (MovieType) -> Unit,
+    onRetryClicked: () -> Unit
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -113,9 +115,13 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    LoadingComponent(modifier = Modifier.align(Alignment.Center))
+                    //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 uiState.error != null -> {
+                    ErrorComponent(
+                        onRetryClicked = onRetryClicked,
+                    )
                     LaunchedEffect(key1 = uiState.error) {
                         snackbarHostState.showSnackbar(
                             message =  uiState.error,
@@ -278,7 +284,8 @@ fun HomeScreenPreview() {
             onSearchQueryChanged = {},
             onSearchBarVisibleToggle = {},
             onMovieClicked = {},
-            onSeeAllClicked = {}
+            onSeeAllClicked = {},
+            onRetryClicked = {}
         )
     }
 }
