@@ -31,7 +31,9 @@ fun MoviesShoApp() {
                 isSearchBarVisible = homeViewModel.isSearchBarVisible,
                 searchQuery = homeViewModel.searchQuery,
                 onSearchQueryChanged = homeViewModel::onSearchQueryChanged,
-                onSearchBarVisibleToggle = homeViewModel::onSearchBarVisibleToggle
+                onSearchBarVisibleToggle = homeViewModel::onSearchBarVisibleToggle,
+                onMovieClicked = {},
+                onSeeAllClicked = {}
             )
         }
     }
