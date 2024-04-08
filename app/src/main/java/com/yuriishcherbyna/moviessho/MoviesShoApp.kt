@@ -2,7 +2,7 @@ package com.yuriishcherbyna.moviessho
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,14 +22,12 @@ fun MoviesShoApp() {
     ) {
         composable(route = Screens.Home.route) {
 
-            val homeViewModel: HomeViewModel = viewModel()
+            val homeViewModel: HomeViewModel = hiltViewModel()
 
-            val popularMovies = homeViewModel.popularMovies.collectAsState()
-            val nowShowingMovies = homeViewModel.nowShowingMovies.collectAsState()
+            val homeUiState = homeViewModel.uiState.collectAsState()
 
             HomeScreen(
-                popularMovies = popularMovies.value,
-                nowShowingMovies = nowShowingMovies.value,
+                uiState = homeUiState.value,
                 isSearchBarVisible = homeViewModel.isSearchBarVisible,
                 searchQuery = homeViewModel.searchQuery,
                 onSearchQueryChanged = homeViewModel::onSearchQueryChanged,

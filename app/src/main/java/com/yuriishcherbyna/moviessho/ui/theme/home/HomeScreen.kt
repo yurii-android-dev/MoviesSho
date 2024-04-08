@@ -1,6 +1,7 @@
 package com.yuriishcherbyna.moviessho.ui.theme.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,15 +17,21 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,15 +50,19 @@ import com.yuriishcherbyna.moviessho.ui.theme.oswaldFontFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    popularMovies: List<Result>,
-    nowShowingMovies: List<Result>,
+    uiState: MoviesUiState,
     isSearchBarVisible: Boolean,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onSearchBarVisibleToggle: () -> Unit
+    onSearchBarVisibleToggle: () -> Unit,
+    onMovieClicked: (Int) -> Unit,
+    onSeeAllClicked: (MovieType) -> Unit
 ) {
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
         topBar = {
             if (isSearchBarVisible) {
                 SearchBar(
@@ -99,13 +110,30 @@ fun HomeScreen(
         }
     ) { innerPadding ->
 
-        PopularAndNowShowingList(
-            popularMovies = popularMovies,
-            nowShowingMovies = nowShowingMovies,
-            onMovieClicked = {},
-            onSeeAllClicked = {},
-            modifier = Modifier.padding(innerPadding)
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+                uiState.error != null -> {
+                    LaunchedEffect(key1 = uiState.error) {
+                        snackbarHostState.showSnackbar(
+                            message =  uiState.error,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
+                else -> {
+                    PopularAndNowShowingList(
+                        popularMovies = uiState.popularMovies,
+                        nowShowingMovies = uiState.nowShowingMovies,
+                        onMovieClicked = onMovieClicked,
+                        onSeeAllClicked = onSeeAllClicked,
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -233,7 +261,7 @@ fun HomeScreenPreview() {
     MoviesShoTheme {
         val movies = List(10) {
             Result(
-                genreIds = listOf(28, 35, 27),
+                genreIds = listOf(28),
                 id = 4753 + it,
                 posterPath = "/hu40Uxp9WtpL34jv3zyWLb5zEVY.jpg",
                 title = "No Way Up",
@@ -241,12 +269,16 @@ fun HomeScreenPreview() {
             )
         }
         HomeScreen(
-            popularMovies = movies,
-            nowShowingMovies = movies,
+            uiState = MoviesUiState(
+                popularMovies = movies,
+                nowShowingMovies = movies
+            ),
             isSearchBarVisible = false,
             searchQuery = "",
             onSearchQueryChanged = {},
-            onSearchBarVisibleToggle = {}
+            onSearchBarVisibleToggle = {},
+            onMovieClicked = {},
+            onSeeAllClicked = {}
         )
     }
 }
