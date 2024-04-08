@@ -28,7 +28,7 @@ class MoviesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getNowPopularMovies(): Flow<Resource<List<Result>>> {
+    override suspend fun getPopularMovies(): Flow<Resource<List<Result>>> {
         return flow {
             try {
                 val nowShowingMovies = api.getNowShowingMovies().results

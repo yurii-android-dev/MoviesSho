@@ -8,7 +8,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.yuriishcherbyna.moviessho.R
-import com.yuriishcherbyna.moviessho.util.Constants
+import com.yuriishcherbyna.moviessho.util.Constants.POSTER_IMAGE_BASE_URL
 
 @Composable
 fun PosterIMage(
@@ -16,7 +16,7 @@ fun PosterIMage(
     modifier: Modifier = Modifier
 ) {
     AsyncImage(
-        model = Constants.POSTER_IMAGE_BASE_URL + posterPath,
+        model = POSTER_IMAGE_BASE_URL + posterPath,
         contentDescription = stringResource(R.string.poster_image),
         contentScale = ContentScale.Crop,
         modifier = modifier

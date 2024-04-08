@@ -8,7 +8,7 @@ interface MoviesRepository {
 
     suspend fun getNowShowingMovies(): Flow<Resource<List<Result>>>
 
-    suspend fun getNowPopularMovies(): Flow<Resource<List<Result>>>
+    suspend fun getPopularMovies(): Flow<Resource<List<Result>>>
 
     suspend fun searchMovies(query: String): Flow<Resource<List<Result>>>
 
