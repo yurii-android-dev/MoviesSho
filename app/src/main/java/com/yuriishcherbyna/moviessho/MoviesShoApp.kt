@@ -32,7 +32,10 @@ fun MoviesShoApp() {
                 searchQuery = homeViewModel.searchQuery,
                 onSearchQueryChanged = homeViewModel::onSearchQueryChanged,
                 onSearchBarVisibleToggle = homeViewModel::onSearchBarVisibleToggle,
+                onSearchedClicked = homeViewModel::searchMovies,
                 onRetryClicked = {homeViewModel.getPopularAndNowShowingMovies()},
+                onSearchRetryClicked = homeViewModel::searchMovies,
+                onClearSearchedListUiState = homeViewModel::clearSearchedListUiState,
                 onMovieClicked = {},
                 onSeeAllClicked = {}
             )

@@ -9,7 +9,6 @@ import com.yuriishcherbyna.moviessho.data.repo.MoviesRepository
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +24,8 @@ data class MoviesUiState(
     val searchedMovies: List<Result> = emptyList(),
     val isLoading: Boolean = false,
     val isSearchLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val searchError: String? = null
 )
 
 @HiltViewModel
@@ -63,7 +63,6 @@ class HomeViewModel @Inject constructor(
             nowShowingMovies.combine(popularMovies) { nowShowing, popular ->
                 Pair(nowShowing, popular)
             }.collect { (nowShowingResult, popularResult) ->
-                delay(3000)
                 _uiState.update { state ->
                     state.copy(
                         nowShowingMovies = (nowShowingResult as? Resource.Success)?.data
@@ -78,4 +77,40 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun searchMovies() {
+        if (searchQuery.isNotEmpty()) {
+            viewModelScope.launch {
+                _uiState.update { state -> state.copy(isSearchLoading = true) }
+                repository.searchMovies(searchQuery).collect { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    searchedMovies = resource.data ?: state.searchedMovies,
+                                    isSearchLoading = false,
+                                    searchError = null
+                                )
+                            }
+                        }
+                        is Resource.Error -> {
+                            _uiState.update { state ->
+                                state.copy(
+                                    isSearchLoading = false,
+                                    searchError = resource.message
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun clearSearchedListUiState() {
+        _uiState.update { state ->
+            state.copy(searchedMovies = emptyList())
+        }
+    }
+
 }

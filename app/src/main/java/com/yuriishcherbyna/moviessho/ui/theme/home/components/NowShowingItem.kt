@@ -20,24 +20,26 @@ fun NowShowingItem(
     onMovieClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     Column(
         modifier = modifier
             .width(150.dp)
             .clickable { onMovieClicked(movie.id) }
     ) {
-        PosterIMage(
-            posterPath = movie.posterPath,
-            modifier = Modifier
-                .height(200.dp)
-                .width(150.dp)
-        )
+        movie.posterPath?.let {
+            PosterIMage(
+                posterPath = it,
+                modifier = Modifier
+                    .height(200.dp)
+                    .width(150.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(12.dp))
         Text(
+            modifier = Modifier.width(150.dp),
             text = movie.title,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
-            maxLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(12.dp))

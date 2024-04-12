@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,10 +42,12 @@ import androidx.compose.ui.unit.sp
 import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
+import com.yuriishcherbyna.moviessho.ui.theme.components.GridList
+import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.ErrorComponent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.LoadingComponent
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.PopularItem
+import com.yuriishcherbyna.moviessho.ui.theme.home.components.SearchInitialContent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.TextAndSeeAllButtonRow
 import com.yuriishcherbyna.moviessho.ui.theme.oswaldFontFamily
 
@@ -56,12 +59,26 @@ fun HomeScreen(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onSearchBarVisibleToggle: () -> Unit,
+    onSearchedClicked: () -> Unit,
     onMovieClicked: (Int) -> Unit,
     onSeeAllClicked: (MovieType) -> Unit,
-    onRetryClicked: () -> Unit
+    onRetryClicked: () -> Unit,
+    onSearchRetryClicked: () -> Unit,
+    onClearSearchedListUiState: () -> Unit
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val controller = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(key1 = uiState.error) {
+        uiState.error?.let { message ->
+            snackbarHostState.showSnackbar(
+                message = message,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
@@ -70,11 +87,13 @@ fun HomeScreen(
                 SearchBar(
                     query = searchQuery,
                     onQueryChange = onSearchQueryChanged,
-                    onSearch = {},
+                    onSearch = {
+                        onSearchedClicked()
+                        controller?.hide()
+                    },
                     leadingIcon = {
                         IconButton(onClick = {
                             onSearchBarVisibleToggle()
-                            onSearchQueryChanged("")
                         }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -88,6 +107,7 @@ fun HomeScreen(
                                 onSearchQueryChanged("")
                             } else {
                                 onSearchBarVisibleToggle()
+                                onClearSearchedListUiState()
                             }
                         }) {
                             Icon(
@@ -102,7 +122,31 @@ fun HomeScreen(
                     active = isSearchBarVisible,
                     onActiveChange = {}
                 ) {
-
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        when {
+                            uiState.searchedMovies.isEmpty() && searchQuery.isEmpty() -> {
+                                SearchInitialContent()
+                            }
+                            uiState.isSearchLoading -> {
+                                LoadingComponent(modifier = Modifier.align(Alignment.Center))
+                            }
+                            uiState.searchError != null -> {
+                                ErrorComponent(
+                                    onSearchRetryClicked = onSearchRetryClicked,
+                                    onRetryClicked = {}
+                                )
+                            }
+                            else -> {
+                                GridList(
+                                    movies = uiState.searchedMovies,
+                                    onMovieClicked = onMovieClicked,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -116,18 +160,12 @@ fun HomeScreen(
             when {
                 uiState.isLoading -> {
                     LoadingComponent(modifier = Modifier.align(Alignment.Center))
-                    //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
                 uiState.error != null -> {
                     ErrorComponent(
                         onRetryClicked = onRetryClicked,
+                        onSearchRetryClicked = {}
                     )
-                    LaunchedEffect(key1 = uiState.error) {
-                        snackbarHostState.showSnackbar(
-                            message =  uiState.error,
-                            duration = SnackbarDuration.Short
-                        )
-                    }
                 }
                 else -> {
                     PopularAndNowShowingList(
@@ -283,9 +321,12 @@ fun HomeScreenPreview() {
             searchQuery = "",
             onSearchQueryChanged = {},
             onSearchBarVisibleToggle = {},
+            onSearchedClicked = {},
             onMovieClicked = {},
             onSeeAllClicked = {},
-            onRetryClicked = {}
+            onRetryClicked = {},
+            onSearchRetryClicked = {},
+            onClearSearchedListUiState = {}
         )
     }
 }

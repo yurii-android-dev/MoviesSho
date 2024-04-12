@@ -31,12 +31,14 @@ fun PopularItem(
             .fillMaxSize()
             .clickable { onMovieClicked(movie.id) }
     ) {
-        PosterIMage(
-            posterPath = movie.posterPath,
-            modifier = Modifier
-                .height(150.dp)
-                .width(100.dp)
-        )
+        movie.posterPath?.let {
+            PosterIMage(
+                posterPath = it,
+                modifier = Modifier
+                    .height(150.dp)
+                    .width(100.dp)
+            )
+        }
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
