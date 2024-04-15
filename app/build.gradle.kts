@@ -109,6 +109,9 @@ dependencies {
 
     // Lottie
     implementation("com.airbnb.android:lottie-compose:6.4.0")
+
+    // Paging
+    implementation("androidx.paging:paging-compose:3.2.1")
 }
 
 kapt {
