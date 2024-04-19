@@ -25,14 +25,12 @@ fun NowShowingItem(
             .width(150.dp)
             .clickable { onMovieClicked(movie.id) }
     ) {
-        movie.posterPath?.let {
-            PosterIMage(
-                posterPath = it,
-                modifier = Modifier
-                    .height(200.dp)
-                    .width(150.dp)
-            )
-        }
+        PosterIMage(
+            posterPath = movie.posterPath ?: "",
+            modifier = Modifier
+                .height(200.dp)
+                .width(150.dp)
+        )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             modifier = Modifier.width(150.dp),
