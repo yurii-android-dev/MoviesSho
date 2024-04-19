@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.yuriishcherbyna.moviessho.ui.theme.home.HomeScreen
 import com.yuriishcherbyna.moviessho.ui.theme.home.HomeViewModel
 
@@ -25,9 +26,11 @@ fun MoviesShoApp() {
             val homeViewModel: HomeViewModel = hiltViewModel()
 
             val homeUiState = homeViewModel.uiState.collectAsState()
+            val searchedMovies = homeViewModel.searchedMovies.collectAsLazyPagingItems()
 
             HomeScreen(
                 uiState = homeUiState.value,
+                searchedMovies = searchedMovies,
                 isSearchBarVisible = homeViewModel.isSearchBarVisible,
                 searchQuery = homeViewModel.searchQuery,
                 onSearchQueryChanged = homeViewModel::onSearchQueryChanged,

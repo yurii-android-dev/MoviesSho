@@ -39,22 +39,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
 import com.yuriishcherbyna.moviessho.ui.theme.components.GridList
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.ErrorComponent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.LoadingComponent
+import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.PopularItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.SearchInitialContent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.TextAndSeeAllButtonRow
 import com.yuriishcherbyna.moviessho.ui.theme.oswaldFontFamily
+import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     uiState: MoviesUiState,
+    searchedMovies: LazyPagingItems<Result>,
     isSearchBarVisible: Boolean,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
@@ -71,6 +77,8 @@ fun HomeScreen(
 
     val controller = LocalSoftwareKeyboardController.current
 
+    val pagingRefreshState = searchedMovies.loadState.refresh
+
     LaunchedEffect(key1 = uiState.error) {
         uiState.error?.let { message ->
             snackbarHostState.showSnackbar(
@@ -81,7 +89,7 @@ fun HomeScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState)},
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             if (isSearchBarVisible) {
                 SearchBar(
@@ -126,23 +134,28 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         when {
-                            uiState.searchedMovies.isEmpty() && searchQuery.isEmpty() -> {
+                            !uiState.isSearchStarted -> {
                                 SearchInitialContent()
                             }
-                            uiState.isSearchLoading -> {
-                                LoadingComponent(modifier = Modifier.align(Alignment.Center))
-                            }
-                            uiState.searchError != null -> {
-                                ErrorComponent(
-                                    onSearchRetryClicked = onSearchRetryClicked,
-                                    onRetryClicked = {}
+
+                            pagingRefreshState is LoadState.Loading -> {
+                                LoadingComponent(
+                                    modifier = Modifier.align(Alignment.Center)
                                 )
                             }
+
+                            pagingRefreshState is LoadState.Error -> {
+                                ErrorComponent(
+                                    onRetryClicked = {},
+                                    onSearchRetryClicked = onSearchRetryClicked
+                                )
+                            }
+
                             else -> {
                                 GridList(
-                                    movies = uiState.searchedMovies,
+                                    movies = searchedMovies,
                                     onMovieClicked = onMovieClicked,
-                                    modifier = Modifier.align(Alignment.Center)
+                                    modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                             }
                         }
@@ -159,14 +172,18 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             when {
                 uiState.isLoading -> {
-                    LoadingComponent(modifier = Modifier.align(Alignment.Center))
+                    LoadingComponent(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
+
                 uiState.error != null -> {
                     ErrorComponent(
                         onRetryClicked = onRetryClicked,
                         onSearchRetryClicked = {}
                     )
                 }
+
                 else -> {
                     PopularAndNowShowingList(
                         popularMovies = uiState.popularMovies,
@@ -241,7 +258,7 @@ fun NowShowingList(
                 key = { movie ->
                     movie.id
                 }
-            ) {movie ->
+            ) { movie ->
                 NowShowingItem(
                     movie = movie,
                     onMovieClicked = onMovieClicked
@@ -288,7 +305,7 @@ fun PopularAndNowShowingList(
             key = { movie ->
                 movie.id
             }
-        ) {movieResult ->
+        ) { movieResult ->
             PopularItem(
                 movie = movieResult,
                 onMovieClicked = onMovieClicked,
@@ -317,6 +334,7 @@ fun HomeScreenPreview() {
                 popularMovies = movies,
                 nowShowingMovies = movies
             ),
+            searchedMovies = flowOf(PagingData.from(movies)).collectAsLazyPagingItems(),
             isSearchBarVisible = false,
             searchQuery = "",
             onSearchQueryChanged = {},

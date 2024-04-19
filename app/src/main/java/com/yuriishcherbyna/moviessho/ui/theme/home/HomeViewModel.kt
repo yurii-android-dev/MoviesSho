@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.yuriishcherbyna.moviessho.data.repo.MoviesRepository
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.util.Resource
@@ -21,20 +23,21 @@ import javax.inject.Inject
 data class MoviesUiState(
     val nowShowingMovies: List<Result> = emptyList(),
     val popularMovies: List<Result> = emptyList(),
-    val searchedMovies: List<Result> = emptyList(),
     val isLoading: Boolean = false,
-    val isSearchLoading: Boolean = false,
     val error: String? = null,
-    val searchError: String? = null
+    val isSearchStarted: Boolean = false
 )
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: MoviesRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MoviesUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _searchedMovies = MutableStateFlow<PagingData<Result>>(PagingData.empty())
+    val searchedMovies = _searchedMovies.asStateFlow()
 
     var searchQuery by mutableStateOf("")
         private set
@@ -48,6 +51,7 @@ class HomeViewModel @Inject constructor(
     fun onSearchQueryChanged(query: String) {
         searchQuery = query
     }
+
     fun onSearchBarVisibleToggle() {
         isSearchBarVisible = !isSearchBarVisible
     }
@@ -80,37 +84,19 @@ class HomeViewModel @Inject constructor(
 
     fun searchMovies() {
         if (searchQuery.isNotEmpty()) {
+            _uiState.update { state -> state.copy(isSearchStarted = true) }
             viewModelScope.launch {
-                _uiState.update { state -> state.copy(isSearchLoading = true) }
-                repository.searchMovies(searchQuery).collect { resource ->
-                    when (resource) {
-                        is Resource.Success -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    searchedMovies = resource.data ?: state.searchedMovies,
-                                    isSearchLoading = false,
-                                    searchError = null
-                                )
-                            }
-                        }
-                        is Resource.Error -> {
-                            _uiState.update { state ->
-                                state.copy(
-                                    isSearchLoading = false,
-                                    searchError = resource.message
-                                )
-                            }
-                        }
+                repository.searchMovies(searchQuery)
+                    .cachedIn(viewModelScope).collect { pagingMovies ->
+                        _searchedMovies.value = pagingMovies
                     }
-                }
             }
         }
     }
 
     fun clearSearchedListUiState() {
-        _uiState.update { state ->
-            state.copy(searchedMovies = emptyList())
-        }
+        _uiState.update { state -> state.copy(isSearchStarted = false) }
+        _searchedMovies.value = PagingData.empty()
     }
 
 }
