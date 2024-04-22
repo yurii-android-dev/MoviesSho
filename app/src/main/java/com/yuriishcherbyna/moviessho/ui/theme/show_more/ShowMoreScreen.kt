@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -50,7 +51,9 @@ fun ShowMoreScreen(
         }
     ) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             when (movies.loadState.refresh) {
                 is LoadState.Loading -> {
@@ -66,7 +69,7 @@ fun ShowMoreScreen(
                     GridList(
                         movies = movies,
                         onMovieClicked = onMovieClicked,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             }
