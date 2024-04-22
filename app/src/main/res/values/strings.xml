@@ -7,4 +7,5 @@
     <string name="popular">Popular</string>
     <string name="see_more">See more</string>
     <string name="icon_color">Icon Color</string>
+    <string name="arrow_back_icon">Arrow Back Icon</string>
 </resources>
