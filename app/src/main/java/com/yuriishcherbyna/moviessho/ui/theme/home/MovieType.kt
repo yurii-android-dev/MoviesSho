@@ -1,6 +1,6 @@
 package com.yuriishcherbyna.moviessho.ui.theme.home
 
-enum class MovieType {
-    POPULAR,
-    NOW_SHOWING
+enum class MovieType(title: String) {
+    POPULAR("Popular"),
+    NOW_SHOWING("Now Showing")
 }
