@@ -4,6 +4,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.yuriishcherbyna.moviessho.data.MoviesApi
+import com.yuriishcherbyna.moviessho.data.paging.NowShowingPagingSource
+import com.yuriishcherbyna.moviessho.data.paging.PopularPagingSource
 import com.yuriishcherbyna.moviessho.data.paging.SearchPagingSource
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.util.Constants.ITEMS_PER_PAGE
@@ -46,6 +48,24 @@ class MoviesRepositoryImpl @Inject constructor(
                 ))
             }
         }
+    }
+
+    override suspend fun getPaginatedNowShowingMovies(): Flow<PagingData<Result>> {
+        return Pager(
+            config = PagingConfig(pageSize = ITEMS_PER_PAGE),
+            pagingSourceFactory = {
+                NowShowingPagingSource(api = api)
+            }
+        ).flow
+    }
+
+    override suspend fun getPaginatedPopularMovies(): Flow<PagingData<Result>> {
+        return Pager(
+            config = PagingConfig(pageSize = ITEMS_PER_PAGE),
+            pagingSourceFactory = {
+                PopularPagingSource(api = api)
+            }
+        ).flow
     }
 
     override suspend fun searchMovies(query: String): Flow<PagingData<Result>> {

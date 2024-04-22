@@ -11,6 +11,10 @@ interface MoviesRepository {
 
     suspend fun getPopularMovies(): Flow<Resource<List<Result>>>
 
+    suspend fun getPaginatedNowShowingMovies(): Flow<PagingData<Result>>
+
+    suspend fun getPaginatedPopularMovies(): Flow<PagingData<Result>>
+
     suspend fun searchMovies(query: String): Flow<PagingData<Result>>
 
 }
