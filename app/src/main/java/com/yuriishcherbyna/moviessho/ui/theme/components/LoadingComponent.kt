@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.moviessho.ui.theme.home.components
+package com.yuriishcherbyna.moviessho.ui.theme.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
