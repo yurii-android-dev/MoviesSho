@@ -27,3 +27,10 @@ fun List<Int>.toGenresText(): List<String> {
     return this.filter { genreId -> genreIdToText.containsKey(genreId) }
         .map { genreId -> genreIdToText[genreId]!! }
 }
+
+fun Int.toPrettyFormattedTime(): String {
+    val hours = this / 60
+    val minutes = this % 60
+
+    return if (minutes == 0) "${hours}h" else "${hours}h ${minutes}min"
+}

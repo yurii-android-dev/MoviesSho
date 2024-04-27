@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.yuriishcherbyna.moviessho.model.Result
+import com.yuriishcherbyna.moviessho.ui.theme.components.ImdbRating
 import com.yuriishcherbyna.moviessho.util.toGenresText
 
 @Composable

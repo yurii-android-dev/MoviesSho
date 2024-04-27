@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yuriishcherbyna.moviessho.model.Result
+import com.yuriishcherbyna.moviessho.ui.theme.components.ImdbRating
 
 @Composable
 fun NowShowingItem(

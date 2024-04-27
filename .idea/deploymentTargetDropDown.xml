@@ -2,16 +2,16 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="HomeScreenPreview">
+      <entry key="DescriptionComponentPreview">
         <State />
       </entry>
-      <entry key="HomeTopAppBarPreview">
+      <entry key="DetailsBodyPreview">
         <State />
       </entry>
-      <entry key="NowShowingItemPreview">
+      <entry key="DetailsScreenPreview">
         <State />
       </entry>
-      <entry key="NowShowingListPreview">
+      <entry key="OpenTrailerComponentPreview">
         <State />
       </entry>
       <entry key="ShowMoreScreenPreview">

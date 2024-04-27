@@ -8,4 +8,8 @@
     <string name="see_more">See more</string>
     <string name="icon_color">Icon Color</string>
     <string name="arrow_back_icon">Arrow Back Icon</string>
+    <string name="backdrop_image">Backdrop image</string>
+    <string name="play_button_icon">Play Button Icon</string>
+    <string name="description">Description</string>
+    <string name="profile_image">Profile Image</string>
 </resources>

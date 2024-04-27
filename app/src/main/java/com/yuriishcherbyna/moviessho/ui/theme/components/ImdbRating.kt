@@ -1,4 +1,4 @@
-package com.yuriishcherbyna.moviessho.ui.theme.home.components
+package com.yuriishcherbyna.moviessho.ui.theme.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
