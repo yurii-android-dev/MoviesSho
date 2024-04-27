@@ -31,7 +31,7 @@ fun PopularItem(
             .fillMaxSize()
             .clickable { onMovieClicked(movie.id) }
     ) {
-        PosterIMage(
+        PosterImage(
             posterPath = movie.posterPath ?: "",
             modifier = Modifier
                 .height(150.dp)

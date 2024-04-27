@@ -25,7 +25,7 @@ fun NowShowingItem(
             .width(150.dp)
             .clickable { onMovieClicked(movie.id) }
     ) {
-        PosterIMage(
+        PosterImage(
             posterPath = movie.posterPath ?: "",
             modifier = Modifier
                 .height(200.dp)
