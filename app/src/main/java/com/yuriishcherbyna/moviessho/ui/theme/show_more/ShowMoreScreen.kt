@@ -29,8 +29,8 @@ import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
 import com.yuriishcherbyna.moviessho.ui.theme.components.GridList
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.ErrorComponent
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.LoadingComponent
+import com.yuriishcherbyna.moviessho.ui.theme.components.ErrorComponent
+import com.yuriishcherbyna.moviessho.ui.theme.components.LoadingComponent
 import com.yuriishcherbyna.moviessho.ui.theme.oswaldFontFamily
 import kotlinx.coroutines.flow.flowOf
 
@@ -61,6 +61,8 @@ fun ShowMoreScreen(
                 }
                 is LoadState.Error -> {
                     ErrorComponent(
+                        canNavigateBack = false,
+                        onNavigateBackClicked = {},
                         onRetryClicked = onRetryClicked,
                         onSearchRetryClicked = {}
                     )

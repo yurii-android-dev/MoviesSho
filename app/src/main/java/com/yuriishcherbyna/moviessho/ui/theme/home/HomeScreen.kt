@@ -47,8 +47,8 @@ import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Result
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
 import com.yuriishcherbyna.moviessho.ui.theme.components.GridList
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.ErrorComponent
-import com.yuriishcherbyna.moviessho.ui.theme.home.components.LoadingComponent
+import com.yuriishcherbyna.moviessho.ui.theme.components.ErrorComponent
+import com.yuriishcherbyna.moviessho.ui.theme.components.LoadingComponent
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.NowShowingItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.PopularItem
 import com.yuriishcherbyna.moviessho.ui.theme.home.components.SearchInitialContent
@@ -146,6 +146,8 @@ fun HomeScreen(
 
                             pagingRefreshState is LoadState.Error -> {
                                 ErrorComponent(
+                                    canNavigateBack = false,
+                                    onNavigateBackClicked = {},
                                     onRetryClicked = {},
                                     onSearchRetryClicked = onSearchRetryClicked
                                 )
@@ -179,6 +181,8 @@ fun HomeScreen(
 
                 uiState.error != null -> {
                     ErrorComponent(
+                        canNavigateBack = false,
+                        onNavigateBackClicked = {},
                         onRetryClicked = onRetryClicked,
                         onSearchRetryClicked = {}
                     )
