@@ -10,11 +10,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.yuriishcherbyna.moviessho.ui.theme.details.DetailsScreen
+import com.yuriishcherbyna.moviessho.ui.theme.details.DetailsViewModel
 import com.yuriishcherbyna.moviessho.ui.theme.home.HomeScreen
 import com.yuriishcherbyna.moviessho.ui.theme.home.HomeViewModel
 import com.yuriishcherbyna.moviessho.ui.theme.home.MovieType
 import com.yuriishcherbyna.moviessho.ui.theme.show_more.ShowMoreScreen
 import com.yuriishcherbyna.moviessho.ui.theme.show_more.ShowMoreViewModel
+import com.yuriishcherbyna.moviessho.util.Constants.MOVIE_ID_ARGUMENT
 import com.yuriishcherbyna.moviessho.util.Constants.MOVIE_TYPE_ARGUMENT
 
 
@@ -45,7 +48,9 @@ fun MoviesShoApp() {
                 onRetryClicked = {homeViewModel.getPopularAndNowShowingMovies()},
                 onSearchRetryClicked = homeViewModel::searchMovies,
                 onClearSearchedListUiState = homeViewModel::clearSearchedListUiState,
-                onMovieClicked = {},
+                onMovieClicked = { movieId ->
+                    navController.navigate(Screens.Details.passMovieId(movieId))
+                },
                 onSeeAllClicked = { movieType ->
                     navController.navigate(Screens.ShowMore.passMovieType(movieType.name))
                 }
@@ -70,10 +75,30 @@ fun MoviesShoApp() {
                 onNavigateBackClicked = {
                     navController.navigateUp()
                 },
-                onMovieClicked = {},
+                onMovieClicked = { movieId ->
+                    navController.navigate(Screens.Details.passMovieId(movieId))
+                },
                 onRetryClicked = {
                     showMoreViewModel.getMoviesByType()
                 }
+            )
+        }
+        composable(
+            route = Screens.Details.route,
+            arguments = listOf(navArgument(MOVIE_ID_ARGUMENT) {
+                type = NavType.IntType
+            })
+        ) {
+
+            val detailsViewModel: DetailsViewModel = hiltViewModel()
+
+            val uiState = detailsViewModel.uiState.collectAsState()
+
+            DetailsScreen(
+                uiState = uiState.value,
+                onNavigateBackClicked = { navController.navigateUp() },
+                onOpenTrailerClicked = {},
+                onRetryClicked = detailsViewModel::getFullMovieDetails
             )
         }
     }
