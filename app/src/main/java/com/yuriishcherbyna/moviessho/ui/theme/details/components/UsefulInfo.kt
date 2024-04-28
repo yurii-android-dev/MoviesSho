@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 fun UsefulInfo(
     runtime: String,
     language: String,
-    voteCount: String,
+    year: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -26,8 +26,8 @@ fun UsefulInfo(
             value = language
         )
         UsefulInfoItem(
-            title = "Vote Count",
-            value = voteCount
+            title = "Year",
+            value = year
         )
     }
 }

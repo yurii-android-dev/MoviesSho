@@ -125,14 +125,14 @@ fun DetailsBody(
     ) {
         Box {
             OpenTrailerComponent(
-                backdropPath = "",
+                backdropPath = uiState.movieDetails?.backdropPath ?: "",
                 onNavigateBackClicked = onNavigateBackClicked,
                 onOpenTrailerClicked = onOpenTrailerClicked
             )
             DescriptionComponent(
                 casts = uiState.casts,
                 movie = uiState.movieDetails!!,
-                modifier = Modifier.padding(top = 220.dp)
+                modifier = Modifier.padding(top = 210.dp)
             )
         }
     }
@@ -154,7 +154,7 @@ fun OpenTrailerComponent(
             error = painterResource(id = R.drawable.ic_placeholder),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(230.dp)
+                .height(220.dp)
         )
         Box(
             modifier = Modifier
@@ -219,7 +219,7 @@ fun DescriptionComponent(
             UsefulInfo(
                 runtime = movie.runtime.toPrettyFormattedTime(),
                 language = movie.originalLanguage,
-                voteCount = movie.voteCount.toString()
+                year = movie.releaseDate.substring(0, 4)
             )
             Spacer(modifier = Modifier.height(16.dp))
             DescriptionTextInfo(description = movie.overview)
@@ -244,10 +244,9 @@ fun DetailsScreenPreview() {
             backdropPath = "",
             genres = listOf(Genre(1, "Drama"), Genre(2, "Comedy")),
             id = 8472,
-            originalLanguage = "English",
+            originalLanguage = "en",
             overview = "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee.",
-            posterPath = "",
-            releaseDate = "02.10.2023",
+            releaseDate = "2024-02-27",
             runtime = 138,
             title = "Spiderman: Now Way Home",
             voteAverage = 7.5,
