@@ -7,7 +7,10 @@ import com.yuriishcherbyna.moviessho.data.MoviesApi
 import com.yuriishcherbyna.moviessho.data.paging.NowShowingPagingSource
 import com.yuriishcherbyna.moviessho.data.paging.PopularPagingSource
 import com.yuriishcherbyna.moviessho.data.paging.SearchPagingSource
+import com.yuriishcherbyna.moviessho.model.Cast
+import com.yuriishcherbyna.moviessho.model.MovieDetails
 import com.yuriishcherbyna.moviessho.model.Result
+import com.yuriishcherbyna.moviessho.model.VideoDetails
 import com.yuriishcherbyna.moviessho.util.Constants.ITEMS_PER_PAGE
 import com.yuriishcherbyna.moviessho.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -75,5 +78,38 @@ class MoviesRepositoryImpl @Inject constructor(
                 SearchPagingSource(query = query, api = api)
             }
         ).flow
+    }
+
+    override suspend fun getMovieDetails(movieId: Int): Resource<MovieDetails> {
+        return try {
+            val result = api.movieDetails(movieId)
+            Resource.Success(result)
+        } catch (e: HttpException) {
+            Resource.Error(e.localizedMessage ?: "An unexpected error occured")
+        } catch (e: IOException) {
+            Resource.Error("Couldn't reach server. Check your internet connection.")
+        }
+    }
+
+    override suspend fun getMovieCasts(movieId: Int): Resource<List<Cast>> {
+        return try {
+            val result = api.getMovieCasts(movieId).cast
+            Resource.Success(result)
+        } catch (e: HttpException) {
+            Resource.Error(e.localizedMessage ?: "An unexpected error occured")
+        } catch (e: IOException) {
+            Resource.Error("Couldn't reach server. Check your internet connection.")
+        }
+    }
+
+    override suspend fun getMovieTrailer(movieId: Int): Resource<List<VideoDetails>> {
+        return try {
+            val result = api.getMovieTrailer(movieId).results
+            Resource.Success(result)
+        } catch (e: HttpException) {
+            Resource.Error(e.localizedMessage ?: "An unexpected error occured")
+        } catch (e: IOException) {
+            Resource.Error("Couldn't reach server. Check your internet connection.")
+        }
     }
 }
