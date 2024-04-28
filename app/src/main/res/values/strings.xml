@@ -12,4 +12,5 @@
     <string name="play_button_icon">Play Button Icon</string>
     <string name="description">Description</string>
     <string name="profile_image">Profile Image</string>
+    <string name="no_trailer_message">This movie doesn\'t have trailer</string>
 </resources>

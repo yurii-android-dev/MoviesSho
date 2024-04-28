@@ -1,5 +1,9 @@
 package com.yuriishcherbyna.moviessho.ui.theme.details
 
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,9 +31,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,18 +56,21 @@ import com.yuriishcherbyna.moviessho.ui.theme.details.components.DescriptionText
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.GenreChips
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.UsefulInfo
 import com.yuriishcherbyna.moviessho.util.Constants.IMAGE_BASE_URL
+import com.yuriishcherbyna.moviessho.util.Constants.YOUTUBE_BASE_URL
 import com.yuriishcherbyna.moviessho.util.toPrettyFormattedTime
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun DetailsScreen(
     uiState: DetailsUiState,
     onNavigateBackClicked: () -> Unit,
-    onOpenTrailerClicked: () -> Unit,
     onRetryClicked:() -> Unit
 ) {
 
+    val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = uiState.error) {
         uiState.error?.let { message ->
@@ -100,7 +109,19 @@ fun DetailsScreen(
                     DetailsBody(
                         uiState = uiState,
                         onNavigateBackClicked = onNavigateBackClicked,
-                        onOpenTrailerClicked = onOpenTrailerClicked,
+                        onOpenTrailerClicked = {
+                            if (uiState.youtubeKey != null) {
+                                openMovieTrailer(uiState.youtubeKey, context)
+                            }  else {
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(R.string.no_trailer_message),
+                                        withDismissAction = true,
+                                        duration = SnackbarDuration.Short
+                                    )
+                                }
+                            }
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -229,6 +250,18 @@ fun DescriptionComponent(
     }
 }
 
+private fun openMovieTrailer(
+    key: String,
+    context: Context
+) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_BASE_URL + key))
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        throw e
+    }
+}
+
 @Preview(apiLevel = 33, showBackground = true)
 @Composable
 fun DetailsScreenPreview() {
@@ -257,7 +290,6 @@ fun DetailsScreenPreview() {
         DetailsScreen(
             uiState = uiState,
             onNavigateBackClicked = {},
-            onOpenTrailerClicked = {},
             onRetryClicked = {}
         )
     }

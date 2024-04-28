@@ -7,5 +7,5 @@ object Constants {
     const val ITEMS_PER_PAGE = 20
     const val MOVIE_TYPE_ARGUMENT = "movieType"
     const val MOVIE_ID_ARGUMENT = "movieId"
-
+    const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 }

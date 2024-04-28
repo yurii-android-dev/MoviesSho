@@ -97,7 +97,6 @@ fun MoviesShoApp() {
             DetailsScreen(
                 uiState = uiState.value,
                 onNavigateBackClicked = { navController.navigateUp() },
-                onOpenTrailerClicked = {},
                 onRetryClicked = detailsViewModel::getFullMovieDetails
             )
         }
