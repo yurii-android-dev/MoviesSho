@@ -1,5 +1,6 @@
 package com.yuriishcherbyna.moviessho.ui.theme.details
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -60,7 +61,7 @@ import com.yuriishcherbyna.moviessho.util.Constants.YOUTUBE_BASE_URL
 import com.yuriishcherbyna.moviessho.util.toPrettyFormattedTime
 import kotlinx.coroutines.launch
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailsScreen(
     uiState: DetailsUiState,
@@ -87,7 +88,7 @@ fun DetailsScreen(
                 hostState = snackbarHostState
             )
         }
-    ) { innerPadding ->
+    ) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -121,8 +122,7 @@ fun DetailsScreen(
                                     )
                                 }
                             }
-                        },
-                        modifier = Modifier.padding(innerPadding)
+                        }
                     )
                 }
             }
