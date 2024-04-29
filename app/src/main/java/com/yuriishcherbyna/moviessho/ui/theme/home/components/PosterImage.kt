@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.yuriishcherbyna.moviessho.R
-import com.yuriishcherbyna.moviessho.util.Constants.IMAGE_BASE_URL
+import com.yuriishcherbyna.moviessho.util.Constants.POSTER_IMAGE_BASE_URL
 
 @Composable
 fun PosterImage(
@@ -20,7 +20,7 @@ fun PosterImage(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(IMAGE_BASE_URL + posterPath)
+            .data(POSTER_IMAGE_BASE_URL + posterPath)
             .crossfade(500)
             .build(),
         contentDescription = stringResource(R.string.poster_image),

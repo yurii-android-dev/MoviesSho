@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.yuriishcherbyna.moviessho.R
 import com.yuriishcherbyna.moviessho.model.Cast
-import com.yuriishcherbyna.moviessho.util.Constants
+import com.yuriishcherbyna.moviessho.util.Constants.CAST_IMAGE_BASE_URL
 
 @Composable
 fun CastItem(
@@ -27,7 +27,7 @@ fun CastItem(
         modifier = modifier.width(100.dp)
     ) {
         AsyncImage(
-            model = Constants.IMAGE_BASE_URL + cast.profilePath,
+            model = CAST_IMAGE_BASE_URL + cast.profilePath,
             contentDescription = stringResource(R.string.profile_image),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.ic_placeholder),

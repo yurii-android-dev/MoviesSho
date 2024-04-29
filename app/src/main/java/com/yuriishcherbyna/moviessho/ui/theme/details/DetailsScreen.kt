@@ -56,7 +56,7 @@ import com.yuriishcherbyna.moviessho.ui.theme.details.components.CastsList
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.DescriptionTextInfo
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.GenreChips
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.UsefulInfo
-import com.yuriishcherbyna.moviessho.util.Constants.IMAGE_BASE_URL
+import com.yuriishcherbyna.moviessho.util.Constants.BACKDROP_IMAGE_BASE_URL
 import com.yuriishcherbyna.moviessho.util.Constants.YOUTUBE_BASE_URL
 import com.yuriishcherbyna.moviessho.util.toPrettyFormattedTime
 import kotlinx.coroutines.launch
@@ -170,7 +170,7 @@ fun OpenTrailerComponent(
         modifier = modifier.fillMaxWidth()
     ) {
         AsyncImage(
-            model = IMAGE_BASE_URL + backdropPath,
+            model = BACKDROP_IMAGE_BASE_URL + backdropPath,
             contentDescription = stringResource(R.string.backdrop_image),
             error = painterResource(id = R.drawable.ic_placeholder),
             modifier = Modifier
