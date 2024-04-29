@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,6 +59,7 @@ import com.yuriishcherbyna.moviessho.ui.theme.details.components.GenreChips
 import com.yuriishcherbyna.moviessho.ui.theme.details.components.UsefulInfo
 import com.yuriishcherbyna.moviessho.util.Constants.BACKDROP_IMAGE_BASE_URL
 import com.yuriishcherbyna.moviessho.util.Constants.YOUTUBE_BASE_URL
+import com.yuriishcherbyna.moviessho.util.toFullLanguage
 import com.yuriishcherbyna.moviessho.util.toPrettyFormattedTime
 import kotlinx.coroutines.launch
 
@@ -153,7 +155,7 @@ fun DetailsBody(
             DescriptionComponent(
                 casts = uiState.casts,
                 movie = uiState.movieDetails!!,
-                modifier = Modifier.padding(top = 210.dp)
+                modifier = Modifier.padding(top = 290.dp)
             )
         }
     }
@@ -172,17 +174,21 @@ fun OpenTrailerComponent(
         AsyncImage(
             model = BACKDROP_IMAGE_BASE_URL + backdropPath,
             contentDescription = stringResource(R.string.backdrop_image),
+            contentScale = ContentScale.Crop,
             error = painterResource(id = R.drawable.ic_placeholder),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp)
+                .height(300.dp)
         )
         Box(
             modifier = Modifier
                 .matchParentSize()
                 .background(Color.Black.copy(alpha = 0.4f))
         )
-        IconButton(onClick = onNavigateBackClicked) {
+        IconButton(
+            onClick = onNavigateBackClicked,
+            modifier = Modifier.padding(top = 40.dp)
+        ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
                 contentDescription = stringResource(id = R.string.arrow_back_icon),
@@ -239,7 +245,7 @@ fun DescriptionComponent(
             Spacer(modifier = Modifier.height(16.dp))
             UsefulInfo(
                 runtime = movie.runtime.toPrettyFormattedTime(),
-                language = movie.originalLanguage,
+                language = movie.originalLanguage.toFullLanguage(),
                 year = movie.releaseDate.substring(0, 4)
             )
             Spacer(modifier = Modifier.height(16.dp))

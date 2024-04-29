@@ -44,7 +44,7 @@ fun ErrorComponent(
         if (canNavigateBack) {
             IconButton(
                 onClick = onNavigateBackClicked,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(top = 40.dp)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
