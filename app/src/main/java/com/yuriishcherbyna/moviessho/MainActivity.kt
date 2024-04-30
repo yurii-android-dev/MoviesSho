@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.yuriishcherbyna.moviessho.ui.theme.MoviesShoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
 
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.parseColor("#501b1b1b"))
