@@ -25,4 +25,7 @@ Dark Version
 - Coroutines and Flow
 - Jetpack Compose
 
+# Local setup
 
+For local setup you need to add this line of code to the <b>gradle.properties<b> file: API_KEY="YOUR_API_KEY" </br>
+Instead of <b>"YOUR_API_KEY"<b> you need to add your own API key where you can get on this website: https://www.themoviedb.org/
